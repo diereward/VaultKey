@@ -16,6 +16,7 @@ public class PreferencesManager {
     private static final String KEY_THEME = "theme";
     private static final String KEY_BIOMETRIC = "biometric";
     private static final String KEY_AUTO_LOCK = "auto_lock_sec";
+    private static final String KEY_VOICE_RATE = "voice_rate";
 
     private static volatile PreferencesManager instance;
     private final SharedPreferences prefs;
@@ -74,6 +75,9 @@ public class PreferencesManager {
     public void    setUseBiometric(boolean v) { prefs.edit().putBoolean(KEY_BIOMETRIC, v).apply(); }
     public int     getAutoLockTimeoutSeconds(){ return prefs.getInt(KEY_AUTO_LOCK, 30); }
     public void    setAutoLockTimeoutSeconds(int s) { prefs.edit().putInt(KEY_AUTO_LOCK, s).apply(); }
+
+    public float   getVoiceRate()             { return prefs.getFloat(KEY_VOICE_RATE, 0.7f); }
+    public void    setVoiceRate(float r)      { prefs.edit().putFloat(KEY_VOICE_RATE, r).apply(); }
 
     private String getMasterVerifier() {
         return readSecret(KEY_MASTER_VERIFIER_SECURE, KEY_MASTER_VERIFIER_PLAIN);

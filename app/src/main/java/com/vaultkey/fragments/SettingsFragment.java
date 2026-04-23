@@ -91,6 +91,13 @@ public class SettingsFragment extends Fragment {
         binding.switchBiometric.setChecked(prefs.useBiometric());
         binding.switchBiometric.setOnCheckedChangeListener((v, checked) -> prefs.setUseBiometric(checked));
 
+        setupAutoLock();
+        setupVoiceSettings();
+
+        binding.rowChangeMaster.getRoot().setOnClickListener(v -> showChangeMasterDialog());
+    }
+
+    private void setupAutoLock() {
         int progress = findAutoLockIndex(prefs.getAutoLockTimeoutSeconds());
         binding.seekAutoLock.setMax(STEPS_SEC.length - 1);
         binding.seekAutoLock.setProgress(progress);
@@ -103,8 +110,35 @@ public class SettingsFragment extends Fragment {
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
         });
+    }
 
-        binding.rowChangeMaster.getRoot().setOnClickListener(v -> showChangeMasterDialog());
+    private void setupVoiceSettings() {
+        float currentRate = prefs.getVoiceRate();
+        binding.seekVoiceRate.setMax(10); // 0.1 to 2.0
+        binding.seekVoiceRate.setProgress(rateToProgress(currentRate));
+        binding.chipVoiceRate.setText(getString(R.string.settings_voice_rate_format, String.format(Locale.US, "%.1f", currentRate)));
+
+        binding.seekVoiceRate.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float rate = progressToRate(progress);
+                prefs.setVoiceRate(rate);
+                binding.chipVoiceRate.setText(getString(R.string.settings_voice_rate_format, String.format(Locale.US, "%.1f", rate)));
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+    }
+
+    private int rateToProgress(float rate) {
+        // Map 0.2 -> 0, 1.0 -> 4, 2.0 -> 9 etc.
+        // Let's use simpler: (rate - 0.2) / 0.2
+        return Math.round((rate - 0.2f) / 0.2f);
+    }
+
+    private float progressToRate(int progress) {
+        // progress 0 = 0.2x, 4 = 1.0x, 9 = 2.0x
+        return 0.2f + (progress * 0.2f);
     }
 
     private void showChangeMasterDialog() {

@@ -83,4 +83,12 @@ public class PasswordsFragment extends Fragment {
         super.onResume();
         AutoLockManager.getInstance().resetTimer();
     }
+
+    @Override
+    public void onDestroy() {
+        if (adapter != null) {
+            adapter.releaseTts();
+        }
+        super.onDestroy();
+    }
 }

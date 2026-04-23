@@ -55,6 +55,9 @@
     <string name="settings_change_master">Сменить пароль доступа</string>
     <string name="settings_change_master_subtitle">Изменить пароль входа в хранилище</string>
 
+    <string name="settings_section_voice">Озвучка паролей</string>
+    <string name="settings_voice_rate_title">Скорость озвучки</string>
+    <string name="settings_voice_rate_format">%1$s x</string>
     <string name="settings_about_button">О приложении</string>
     <string name="settings_about_title">О приложении</string>
     <string name="settings_about_subtitle">Версия и краткая информация о VaultKey</string>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VaultKey</string>
+
+    <string name="nav_passwords">Пароли</string>
+    <string name="nav_generator">Генератор</string>
+    <string name="nav_settings">Настройки</string>
+
+    <string name="title_passwords">Пароли</string>
+    <string name="title_generator">Генератор паролей</string>
+    <string name="title_settings">Настройки</string>
+    <string name="title_new_password">Новый пароль</string>
+    <string name="title_edit_password">Редактировать пароль</string>
+
+    <string name="copied">Скопировано</string>
+    <string name="password_copied">Пароль скопирован</string>
+    <string name="login_copied">Логин скопирован</string>
+    <string name="generator_copy">Копировать</string>
+    <string name="generator_placeholder">Нажмите «Обновить»</string>
+    <string name="generator_save_as_password">Сохранить как пароль</string>
+    <string name="generator_section_params">Параметры</string>
+    <string name="generator_length_label">Длина пароля</string>
+    <string name="generator_length_chars">%1$d симв.</string>
+    <string name="generator_toggle_lower">Строчные  a-z</string>
+    <string name="generator_toggle_upper">Заглавные  A-Z</string>
+    <string name="generator_toggle_digits">Цифры  0-9</string>
+    <string name="generator_toggle_symbols">Символы  !@#$%%^&amp;*</string>
+    <string name="generator_action_refresh">Обновить</string>
+    <string name="generator_issue_too_short">Слишком короткий - используйте минимум 12 символов</string>
+    <string name="crack_time_centuries">века</string>
+    <string name="crack_time_years">годы</string>
+    <string name="crack_time_hours">часы</string>
+    <string name="crack_time_minutes">минуты</string>
+    <string name="crack_time_seconds">секунды</string>
+
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
+    <string name="delete">Удалить</string>
+    <string name="action_lock">Заблокировать</string>
+
+    <string name="settings_section_appearance">Тема приложения</string>
+    <string name="settings_theme_system">Системная</string>
+    <string name="settings_theme_dark">Тёмная</string>
+    <string name="settings_theme_light">Светлая</string>
+
+    <string name="settings_section_security">Безопасность</string>
+    <string name="settings_biometric_title">Вход по отпечатку</string>
+    <string name="settings_biometric_subtitle">Использовать биометрию для разблокировки</string>
+    <string name="settings_autolock_title">Автоблокировка</string>
+    <string name="settings_autolock_subtitle">Блокировать приложение при бездействии</string>
+    <string name="settings_autolock_default">30 сек</string>
+    <string name="settings_autolock_format_seconds">%1$d сек</string>
+    <string name="settings_autolock_format_minutes">%1$s мин</string>
+    <string name="settings_change_master">Сменить пароль доступа</string>
+    <string name="settings_change_master_subtitle">Изменить пароль входа в хранилище</string>
+
+    <string name="settings_about_button">О приложении</string>
+    <string name="settings_about_title">О приложении</string>
+    <string name="settings_about_subtitle">Версия и краткая информация о VaultKey</string>
+    <string name="settings_about_message">Версия: %1$s (%2$d)\n\nVaultKey - локальный менеджер паролей.\n\n- Данные хранятся локально в зашифрованном виде\n- Разблокировка по паролю доступа и биометрии\n- Автоблокировка при бездействии</string>
+    <string name="settings_change_master_title">Смена пароля доступа</string>
+    <string name="settings_change_master_success">Пароль доступа обновлён</string>
+    <string name="settings_change_master_error">Не удалось сменить пароль доступа</string>
+    <string name="settings_old_password">Текущий пароль</string>
+    <string name="settings_new_password">Новый пароль</string>
+    <string name="settings_confirm_password">Подтвердите новый пароль</string>
+    <string name="settings_invalid_old_password">Неверный текущий пароль</string>
+    <string name="settings_invalid_new_password">Новый пароль должен быть не короче 6 символов</string>
+    <string name="settings_password_mismatch">Пароли не совпадают</string>
+
+    <string name="lock_subtitle_create">Придумайте пароль для защиты хранилища</string>
+    <string name="lock_subtitle_enter">Введите пароль доступа</string>
+    <string name="lock_button_create_vault">Создать хранилище</string>
+    <string name="lock_button_biometric">Войти по отпечатку</string>
+    <string name="lock_hint_or">или</string>
+    <string name="lock_hint_master_password">Пароль доступа</string>
+    <string name="lock_button_unlock">Войти</string>
+    <string name="lock_biometric_prompt_subtitle">Приложите палец для входа</string>
+    <string name="lock_biometric_negative">Ввести пароль</string>
+    <string name="lock_error_too_many_attempts">Слишком много попыток. Введите пароль.</string>
+    <string name="lock_error_fingerprint_failed">Отпечаток не распознан. Попробуйте снова.</string>
+    <string name="lock_error_enter_password">Введите пароль</string>
+    <string name="lock_error_short_password">Пароль минимум 6 символов</string>
+    <string name="lock_error_wrong_password">Неверный пароль. Попробуйте снова.</string>
+    <string name="lock_error_prefix">Ошибка: %1$s</string>
+
+    <string name="add_password_avatar_title">Аватар записи</string>
+    <string name="add_password_avatar_subtitle">Фото или favicon по URL</string>
+    <string name="add_password_title_hint">Название *</string>
+    <string name="add_password_username_hint">Логин / Email</string>
+    <string name="add_password_password_hint">Пароль *</string>
+    <string name="add_password_url_hint">URL сайта</string>
+    <string name="add_password_notes_hint">Заметки</string>
+    <string name="add_password_category_hint">Категория</string>
+    <string name="add_password_save">Сохранить пароль</string>
+    <string name="add_password_fill_required">Заполните название и пароль</string>
+
+    <string name="passwords_search_hint">Поиск паролей...</string>
+    <string name="passwords_empty_title">Нет паролей</string>
+    <string name="passwords_empty_subtitle">Нажмите + чтобы добавить первый</string>
+    <string name="passwords_add">Добавить</string>
+    <string name="password_delete_title">Удалить пароль?</string>
+    <string name="password_delete_message">«%1$s» будет удалён навсегда.</string>
+
+    <string name="item_label_username">Логин</string>
+    <string name="item_label_password">Пароль</string>
+    <string name="strength_label">Надёжность</string>
+    <string name="strength_very_weak">Очень слабый</string>
+    <string name="strength_weak">Слабый</string>
+    <string name="strength_fair">Средний</string>
+    <string name="strength_strong">Надёжный</string>
+    <string name="strength_excellent">Отличный</string>
+
+    <string name="category_work">Работа</string>
+    <string name="category_personal">Личное</string>
+    <string name="category_social">Соцсети</string>
+    <string name="category_finance">Финансы</string>
+    <string name="category_games">Игры</string>
+    <string name="category_other">Другое</string>
+
+    <string-array name="password_categories">
+        <item>@string/category_work</item>
+        <item>@string/category_personal</item>
+        <item>@string/category_social</item>
+        <item>@string/category_finance</item>
+        <item>@string/category_games</item>
+        <item>@string/category_other</item>
+    </string-array>
+</resources>

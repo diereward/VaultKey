@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default padding for phones -->
+    <dimen name="adaptive_padding">16dp</dimen>
+    <dimen name="adaptive_margin_bottom">20dp</dimen>
+</resources>

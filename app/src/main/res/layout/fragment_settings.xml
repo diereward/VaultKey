@@ -149,11 +149,14 @@
                             android:id="@+id/chipVoiceRate"
                             style="@style/Widget.Material3.Chip.Assist"
                             android:layout_width="wrap_content"
-                            android:layout_height="30dp"
+                            android:layout_height="32dp"
                             android:text="0.7x"
                             android:textColor="@color/brand"
                             android:textStyle="bold"
-                            app:chipBackgroundColor="@color/brand_container"/>
+                            app:chipBackgroundColor="@android:color/transparent"
+                            app:chipStrokeColor="@color/brand"
+                            app:chipStrokeWidth="1.5dp"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
                     </LinearLayout>
 
                     <SeekBar
@@ -266,11 +269,14 @@
                             android:id="@+id/chipAutoLock"
                             style="@style/Widget.Material3.Chip.Assist"
                             android:layout_width="wrap_content"
-                            android:layout_height="30dp"
+                            android:layout_height="32dp"
                             android:text="@string/settings_autolock_default"
                             android:textColor="@color/brand"
                             android:textStyle="bold"
-                            app:chipBackgroundColor="@color/brand_container"/>
+                            app:chipBackgroundColor="@android:color/transparent"
+                            app:chipStrokeColor="@color/brand"
+                            app:chipStrokeWidth="1.5dp"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
                     </LinearLayout>
 
                     <SeekBar

@@ -1,6 +1,7 @@
 package com.vaultkey.utils;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.View;
 import com.google.android.material.chip.Chip;
 import com.vaultkey.R;
@@ -19,7 +20,12 @@ public final class StrengthHelper {
             if (crackTime != null && !crackTime.isEmpty()) text += " • " + crackTime;
             chip.setText(text);
             chip.setTextColor(color);
-            chip.setChipBackgroundColorResource(android.R.color.transparent);
+            chip.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
+            chip.setChipStrokeColor(android.content.res.ColorStateList.valueOf(color));
+            chip.setChipStrokeWidth(1.5f);
+            chip.setShapeAppearanceModel(chip.getShapeAppearanceModel().toBuilder()
+                .setAllCornerSizes(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, ctx.getResources().getDisplayMetrics()))
+                .build());
         }
 
         int filled = score == 0 ? 0 : score + 1;

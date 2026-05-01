@@ -3,7 +3,6 @@ package com.vaultkey.adapters;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,27 +36,11 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
     private final OnEditListener editListener;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private String query = "";
-    private TextToSpeech tts;
+    private static long lastCopyTimestamp = 0;
 
     public PasswordAdapter(Context ctx, OnEditListener editListener) {
         this.ctx = ctx;
         this.editListener = editListener;
-        initTts();
-    }
-
-    private void initTts() {
-        tts = new TextToSpeech(ctx, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                tts.setLanguage(Locale.US);
-            }
-        });
-    }
-
-    public void releaseTts() {
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
     }
 
     public void submitList(List<PasswordEntry> list) {
@@ -70,7 +53,9 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
         applyFilter();
     }
 
-
+    public void release() {
+        io.shutdown();
+    }
 
     private void applyFilter() {
         List<PasswordEntry> oldList = new ArrayList<>(filtered);
@@ -87,8 +72,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
                 if (t.contains(query) || u.contains(query) || r.contains(query)) source.add(e);
             }
         }
-
-
 
         filtered = source;
 
@@ -180,18 +163,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
             }
         });
 
-        h.btnSpeak.setOnClickListener(v -> {
-            String cached = h.tvPasswordValue.getTag() != null ? (String) h.tvPasswordValue.getTag() : null;
-            if (cached != null) {
-                speak(cached);
-            } else {
-                io.execute(() -> {
-                    String p = decryptPassword(e);
-                    v.post(() -> speak(p));
-                });
-            }
-        });
-
         if (h.btnCopyLogin != null) {
             h.btnCopyLogin.setOnClickListener(v -> {
                 clip("login", e.username);
@@ -220,11 +191,11 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
     private void clip(String label, String text) {
         ClipboardManager cm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setPrimaryClip(ClipData.newPlainText(label, text));
+        long now = System.currentTimeMillis();
+        lastCopyTimestamp = now;
         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-            if (cm.getPrimaryClip() != null && cm.getPrimaryClip().getItemCount() > 0) {
-                if (text.equals(cm.getPrimaryClip().getItemAt(0).getText().toString())) {
-                    cm.setPrimaryClip(ClipData.newPlainText("", ""));
-                }
+            if (lastCopyTimestamp == now) {
+                cm.setPrimaryClip(ClipData.newPlainText("", ""));
             }
         }, 30_000);
     }
@@ -233,20 +204,11 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
         return "•".repeat(Math.min(plain == null ? 0 : plain.length(), 20));
     }
 
-    private void speak(String text) {
-        if (tts != null && text != null) {
-            float rate = PreferencesManager.getInstance(ctx).getVoiceRate();
-            tts.setSpeechRate(rate);
-            String spaced = text.replace("", " ").trim();
-            tts.speak(spaced, TextToSpeech.QUEUE_FLUSH, null, null);
-        }
-    }
-
     static class VH extends RecyclerView.ViewHolder {
         TextView tvInitial, tvTitle, tvUsername, tvPasswordValue, tvLoginValue;
         ImageView ivAvatar;
         View strengthDot, rowMain, expandedRow;
-        ImageButton btnEdit, btnDelete, btnTogglePassword, btnCopy, btnCopyLogin, btnSpeak;
+        ImageButton btnEdit, btnDelete, btnTogglePassword, btnCopy, btnCopyLogin;
         boolean isShowing = false;
 
         VH(View v) {
@@ -264,7 +226,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
             btnTogglePassword = v.findViewById(R.id.btnTogglePassword);
             btnCopy = v.findViewById(R.id.btnCopy);
             btnCopyLogin = v.findViewById(R.id.btnCopyLogin);
-            btnSpeak = v.findViewById(R.id.btnSpeak);
             tvLoginValue = v.findViewById(R.id.tvLoginValue);
         }
     }

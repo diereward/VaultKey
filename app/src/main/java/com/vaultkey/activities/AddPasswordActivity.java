@@ -18,6 +18,7 @@ import com.vaultkey.utils.EncryptionManager;
 import com.vaultkey.utils.PasswordGenerator;
 import com.vaultkey.utils.PreferencesManager;
 import com.vaultkey.utils.StrengthHelper;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AddPasswordActivity extends BaseActivity {
@@ -26,6 +27,7 @@ public class AddPasswordActivity extends BaseActivity {
     private long editId = -1;
     private long createdAt = System.currentTimeMillis();
     private String avatarPath = "";
+    private final ExecutorService io = Executors.newSingleThreadExecutor();
 
     private final ActivityResultLauncher<String> avatarPicker = registerForActivityResult(
         new ActivityResultContracts.GetContent(), uri -> {
@@ -69,7 +71,7 @@ public class AddPasswordActivity extends BaseActivity {
         if (editId != -1) {
             if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.title_edit_password);
             String dataKey = PreferencesManager.getInstance(this).getDataEncryptionKey();
-            Executors.newSingleThreadExecutor().execute(() -> {
+            io.execute(() -> {
                 PasswordEntry entry = VaultDatabase.getInstance(this).passwordDao().getById(editId);
                 if (entry == null) return;
                 String plainPass = EncryptionManager.decrypt(entry.password, dataKey);
@@ -124,8 +126,15 @@ public class AddPasswordActivity extends BaseActivity {
     private void save() {
         String title = text(binding.etTitle).trim();
         String plainPassword = text(binding.etPassword);
+        String url = text(binding.etUrl).trim();
+
         if (title.isEmpty() || plainPassword.isEmpty()) {
             Toast.makeText(this, R.string.add_password_fill_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!url.isEmpty() && !android.util.Patterns.WEB_URL.matcher(url).matches()) {
+            binding.etUrl.setError(getString(R.string.add_password_invalid_url));
             return;
         }
 
@@ -137,7 +146,7 @@ public class AddPasswordActivity extends BaseActivity {
         entry.title = title;
         entry.username = text(binding.etUsername);
         entry.password = EncryptionManager.encrypt(plainPassword, dataKey);
-        entry.url = text(binding.etUrl);
+        entry.url = url;
         entry.notes = text(binding.etNotes);
         String category = text(binding.acCategory).trim();
         entry.category = category.isEmpty() ? getString(R.string.category_other) : category;
@@ -146,7 +155,7 @@ public class AddPasswordActivity extends BaseActivity {
         entry.createdAt = editId == -1 ? System.currentTimeMillis() : createdAt;
         entry.updatedAt = System.currentTimeMillis();
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        io.execute(() -> {
             VaultDatabase db = VaultDatabase.getInstance(this);
             if (editId == -1) db.passwordDao().insert(entry);
             else db.passwordDao().update(entry);
@@ -156,5 +165,11 @@ public class AddPasswordActivity extends BaseActivity {
 
     private String text(android.widget.EditText et) {
         return et.getText() == null ? "" : et.getText().toString();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        io.shutdown();
     }
 }

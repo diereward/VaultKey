@@ -1,6 +1,5 @@
 package com.vaultkey.activities;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import com.vaultkey.R;
 import com.vaultkey.databinding.ActivityLockBinding;
 import com.vaultkey.utils.AutoLockManager;
-
 import com.vaultkey.utils.PreferencesManager;
 import com.vaultkey.utils.ThemeManager;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +31,6 @@ public class LockActivity extends AppCompatActivity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private int failedAttempts = 0;
     private long lockoutUntil = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

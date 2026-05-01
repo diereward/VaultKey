@@ -16,7 +16,6 @@ public class PreferencesManager {
     private static final String KEY_THEME = "theme";
     private static final String KEY_BIOMETRIC = "biometric";
     private static final String KEY_AUTO_LOCK = "auto_lock_sec";
-    private static final String KEY_VOICE_RATE = "voice_rate";
 
     private static volatile PreferencesManager instance;
     private final SharedPreferences prefs;
@@ -76,9 +75,6 @@ public class PreferencesManager {
     public int     getAutoLockTimeoutSeconds(){ return prefs.getInt(KEY_AUTO_LOCK, 30); }
     public void    setAutoLockTimeoutSeconds(int s) { prefs.edit().putInt(KEY_AUTO_LOCK, s).apply(); }
 
-    public float   getVoiceRate()             { return prefs.getFloat(KEY_VOICE_RATE, 0.7f); }
-    public void    setVoiceRate(float r)      { prefs.edit().putFloat(KEY_VOICE_RATE, r).apply(); }
-
     private String getMasterVerifier() {
         return readSecret(KEY_MASTER_VERIFIER_SECURE, KEY_MASTER_VERIFIER_PLAIN);
     }
@@ -102,7 +98,11 @@ public class PreferencesManager {
     private String readSecret(String secureKey, String plainKey) {
         String encrypted = prefs.getString(secureKey, "");
         if (encrypted != null && !encrypted.isEmpty()) {
-            try { return KeystoreSecretBox.decrypt(encrypted); } catch (Exception ignored) {}
+            try {
+                return KeystoreSecretBox.decrypt(encrypted);
+            } catch (Exception e) {
+                throw new SecurityException("AndroidKeyStore decryption failed - potential tampering or hardware issue", e);
+            }
         }
         String plain = prefs.getString(plainKey, "");
         return plain == null ? "" : plain;

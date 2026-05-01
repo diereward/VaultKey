@@ -86,9 +86,7 @@ public class PasswordsFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (adapter != null) {
-            adapter.releaseTts();
-        }
+        if (adapter != null) adapter.release();
         super.onDestroy();
     }
 }

@@ -28,7 +28,7 @@ public final class StrengthHelper {
                 .build());
         }
 
-        int filled = score == 0 ? 0 : score + 1;
+        int filled = Math.max(1, Math.min(score + 1, 5));
         int[] ids = {R.id.bar1, R.id.bar2, R.id.bar3, R.id.bar4, R.id.bar5};
         int empty = ctx.getColor(R.color.outline_variant);
         for (int i = 0; i < ids.length; i++) {

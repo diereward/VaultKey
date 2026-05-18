@@ -2,36 +2,39 @@ package com.vaultkey.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import com.vaultkey.R;
 import com.vaultkey.databinding.ActivityMainBinding;
 import com.vaultkey.fragments.GeneratorFragment;
 import com.vaultkey.fragments.PasswordsFragment;
 import com.vaultkey.fragments.SettingsFragment;
+import com.vaultkey.utils.EdgeToEdge;
 
 public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
+    private int selectedTab = R.id.nav_passwords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setupEdgeToEdge();
 
         if (savedInstanceState == null) {
             int tab = normalizeTab(getIntent().getIntExtra("nav_tab", R.id.nav_passwords));
-            binding.bottomNav.setSelectedItemId(tab);
-            loadFragment(tabFragment(tab));
+            selectTab(tab, true);
         }
 
-        binding.bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_passwords) { loadFragment(new PasswordsFragment()); return true; }
-            if (id == R.id.nav_generator) { loadFragment(new GeneratorFragment()); return true; }
-            if (id == R.id.nav_settings)  { loadFragment(new SettingsFragment());  return true; }
-            return false;
-        });
+        binding.navPasswords.setOnClickListener(v -> selectTab(R.id.nav_passwords, false));
+        binding.navGenerator.setOnClickListener(v -> selectTab(R.id.nav_generator, false));
+        binding.navSettings.setOnClickListener(v -> selectTab(R.id.nav_settings, false));
     }
 
     @Override
@@ -39,9 +42,7 @@ public class MainActivity extends BaseActivity {
         super.onNewIntent(intent);
         int tab = intent.getIntExtra("nav_tab", -1);
         if (tab != -1) {
-            tab = normalizeTab(tab);
-            binding.bottomNav.setSelectedItemId(tab);
-            loadFragment(tabFragment(tab));
+            selectTab(normalizeTab(tab), false);
         }
     }
 
@@ -58,6 +59,57 @@ public class MainActivity extends BaseActivity {
             .commit();
     }
 
+    private void selectTab(int tabId, boolean force) {
+        tabId = normalizeTab(tabId);
+        if (!force && selectedTab == tabId) return;
+        selectedTab = tabId;
+        updateNavItem(binding.navPasswordsIcon, binding.navPasswordsText, tabId == R.id.nav_passwords);
+        updateNavItem(binding.navGeneratorIcon, binding.navGeneratorText, tabId == R.id.nav_generator);
+        updateNavItem(binding.navSettingsIcon, binding.navSettingsText, tabId == R.id.nav_settings);
+        loadFragment(tabFragment(tabId));
+    }
+
+    private void updateNavItem(ImageView icon, TextView text, boolean selected) {
+        int color = getColor(selected ? R.color.brand : R.color.on_surface_variant);
+        icon.setColorFilter(color);
+        text.setTextColor(color);
+        text.setTypeface(null, selected ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+    }
+
+    private void setupEdgeToEdge() {
+        EdgeToEdge.enable(this, binding.getRoot());
+
+        int baseHorizontalMargin = dp(14);
+        int baseBottomMargin = dp(14);
+        int extraContentGap = dp(8);
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (view, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(EdgeToEdge.insetTypes());
+
+            ViewGroup.MarginLayoutParams navParams =
+                (ViewGroup.MarginLayoutParams) binding.bottomNavContainer.getLayoutParams();
+            navParams.leftMargin = baseHorizontalMargin + insets.left;
+            navParams.rightMargin = baseHorizontalMargin + insets.right;
+            navParams.bottomMargin = baseBottomMargin + insets.bottom;
+            binding.bottomNavContainer.setLayoutParams(navParams);
+
+            binding.bottomNavContainer.post(() -> {
+                int navBottomSpace = binding.bottomNavContainer.getHeight()
+                    + navParams.bottomMargin
+                    + extraContentGap;
+                binding.fragmentContainer.setPadding(
+                    insets.left,
+                    insets.top,
+                    insets.right,
+                    navBottomSpace
+                );
+            });
+
+            return windowInsets;
+        });
+        ViewCompat.requestApplyInsets(binding.getRoot());
+    }
+
     public void lockAndGoToLock() {
         startActivity(new Intent(this, LockActivity.class)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
@@ -66,5 +118,9 @@ public class MainActivity extends BaseActivity {
     private int normalizeTab(int tabId) {
         if (tabId == R.id.nav_passwords || tabId == R.id.nav_generator || tabId == R.id.nav_settings) return tabId;
         return R.id.nav_passwords;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
     }
 }

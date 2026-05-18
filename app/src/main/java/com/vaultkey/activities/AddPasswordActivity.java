@@ -14,6 +14,7 @@ import com.vaultkey.data.database.VaultDatabase;
 import com.vaultkey.data.model.PasswordEntry;
 import com.vaultkey.databinding.ActivityAddPasswordBinding;
 import com.vaultkey.utils.AvatarHelper;
+import com.vaultkey.utils.EdgeToEdge;
 import com.vaultkey.utils.EncryptionManager;
 import com.vaultkey.utils.PasswordGenerator;
 import com.vaultkey.utils.PreferencesManager;
@@ -39,6 +40,9 @@ public class AddPasswordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAddPasswordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        EdgeToEdge.enable(this, binding.getRoot());
+        EdgeToEdge.applySystemBarsPadding(binding.getRoot(), true, true, true, false);
+        EdgeToEdge.applySystemBarsPadding(binding.scrollContent, false, false, false, true);
 
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setNavigationOnClickListener(v -> finish());

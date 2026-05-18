@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import com.vaultkey.R;
 import com.vaultkey.databinding.ActivityLockBinding;
 import com.vaultkey.utils.AutoLockManager;
+import com.vaultkey.utils.EdgeToEdge;
 import com.vaultkey.utils.PreferencesManager;
 import com.vaultkey.utils.ThemeManager;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +39,8 @@ public class LockActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLockBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        EdgeToEdge.enable(this, binding.getRoot());
+        EdgeToEdge.applySystemBarsPadding(binding.getRoot(), true, true, true, true);
 
         prefs = PreferencesManager.getInstance(this);
         android.content.SharedPreferences sp = getSharedPreferences("vault_prefs", android.content.Context.MODE_PRIVATE);

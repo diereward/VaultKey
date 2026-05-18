@@ -10,7 +10,7 @@
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="108dp" />
+        android:clipToPadding="false" />
 
     <FrameLayout
         android:id="@+id/bottomNavContainer"
@@ -23,15 +23,103 @@
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp">
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <LinearLayout
             android:id="@+id/bottomNav"
-            style="@style/Widget.VaultKey.BottomNavigationView"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:background="@android:color/transparent"
-            app:itemHorizontalTranslationEnabled="false"
-            app:labelVisibilityMode="labeled"
-            app:menu="@menu/bottom_nav_menu" />
+            android:layout_height="76dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/navPasswords"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/navPasswordsIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/nav_passwords"
+                    android:src="@drawable/ic_key"
+                    app:tint="@color/on_surface_variant" />
+
+                <TextView
+                    android:id="@+id/navPasswordsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/nav_passwords"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/navGenerator"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/navGeneratorIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/nav_generator"
+                    android:src="@drawable/ic_generate"
+                    app:tint="@color/on_surface_variant" />
+
+                <TextView
+                    android:id="@+id/navGeneratorText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/nav_generator"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/navSettings"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/navSettingsIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/nav_settings"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/on_surface_variant" />
+
+                <TextView
+                    android:id="@+id/navSettingsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/nav_settings"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
 
     </FrameLayout>
 

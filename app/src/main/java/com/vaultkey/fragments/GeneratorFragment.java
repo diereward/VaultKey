@@ -9,12 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.vaultkey.R;
 import com.vaultkey.activities.AddPasswordActivity;
@@ -99,7 +99,7 @@ public class GeneratorFragment extends Fragment {
         return row.switchToggle;
     }
 
-    private void setPreset(Chip chip, int length) {
+    private void setPreset(TextView chip, int length) {
         chip.setOnClickListener(v -> {
             binding.seekLength.setProgress(length);
             binding.chipLength.setText(getString(R.string.generator_length_chars, length));
@@ -109,11 +109,11 @@ public class GeneratorFragment extends Fragment {
     }
 
     private void syncPresetChips(int progress) {
-        binding.chip8.setChecked(progress == 8);
-        binding.chip12.setChecked(progress == 12);
-        binding.chip16.setChecked(progress == 16);
-        binding.chip24.setChecked(progress == 24);
-        binding.chip32.setChecked(progress == 32);
+        binding.chip8.setSelected(progress == 8);
+        binding.chip12.setSelected(progress == 12);
+        binding.chip16.setSelected(progress == 16);
+        binding.chip24.setSelected(progress == 24);
+        binding.chip32.setSelected(progress == 32);
     }
 
     private void generate() {

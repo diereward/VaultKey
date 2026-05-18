@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">VaultKey</string>
+    <string name="avatar_initial_placeholder" translatable="false">+</string>
+    <string name="generator_preset_8" translatable="false">8</string>
+    <string name="generator_preset_12" translatable="false">12</string>
+    <string name="generator_preset_16" translatable="false">16</string>
+    <string name="generator_preset_24" translatable="false">24</string>
+    <string name="generator_preset_32" translatable="false">32</string>
 
     <string name="nav_passwords">Пароли</string>
     <string name="nav_generator">Генератор</string>

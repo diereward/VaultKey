@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import java.util.Locale;
 
 public class AvatarHelper {
 
@@ -62,7 +63,7 @@ public class AvatarHelper {
     private static void show(TextView tv, String label) {
         if (tv == null) return;
         tv.setVisibility(View.VISIBLE);
-        tv.setText(label != null && !label.isEmpty() ? label.substring(0, 1).toUpperCase() : "+");
+        tv.setText(label != null && !label.isEmpty() ? label.substring(0, 1).toUpperCase(Locale.getDefault()) : "+");
     }
 
     private static String buildFaviconUrl(String url) {

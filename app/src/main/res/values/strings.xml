@@ -102,6 +102,7 @@
     <string name="add_password_category_hint">Категория</string>
     <string name="add_password_save">Сохранить пароль</string>
     <string name="add_password_fill_required">Заполните название и пароль</string>
+    <string name="add_password_decryption_failed">Не удалось расшифровать пароль</string>
 
     <string name="passwords_search_hint">Поиск паролей...</string>
     <string name="passwords_empty_title">Нет паролей</string>

@@ -17,6 +17,8 @@ import com.vaultkey.utils.EdgeToEdge;
 
 public class MainActivity extends BaseActivity {
 
+    private static final String STATE_SELECTED_TAB = "selected_tab";
+
     private ActivityMainBinding binding;
     private int selectedTab = R.id.nav_passwords;
 
@@ -28,13 +30,21 @@ public class MainActivity extends BaseActivity {
         setupEdgeToEdge();
 
         if (savedInstanceState == null) {
-            int tab = normalizeTab(getIntent().getIntExtra("nav_tab", R.id.nav_passwords));
-            selectTab(tab, true);
+            selectTab(getIntent().getIntExtra("nav_tab", R.id.nav_passwords), true);
+        } else {
+            selectedTab = normalizeTab(savedInstanceState.getInt(STATE_SELECTED_TAB, inferCurrentTab()));
+            updateNavSelection(selectedTab);
         }
 
         binding.navPasswords.setOnClickListener(v -> selectTab(R.id.nav_passwords, false));
         binding.navGenerator.setOnClickListener(v -> selectTab(R.id.nav_generator, false));
         binding.navSettings.setOnClickListener(v -> selectTab(R.id.nav_settings, false));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_SELECTED_TAB, selectedTab);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -63,10 +73,14 @@ public class MainActivity extends BaseActivity {
         tabId = normalizeTab(tabId);
         if (!force && selectedTab == tabId) return;
         selectedTab = tabId;
+        updateNavSelection(tabId);
+        loadFragment(tabFragment(tabId));
+    }
+
+    private void updateNavSelection(int tabId) {
         updateNavItem(binding.navPasswordsIcon, binding.navPasswordsText, tabId == R.id.nav_passwords);
         updateNavItem(binding.navGeneratorIcon, binding.navGeneratorText, tabId == R.id.nav_generator);
         updateNavItem(binding.navSettingsIcon, binding.navSettingsText, tabId == R.id.nav_settings);
-        loadFragment(tabFragment(tabId));
     }
 
     private void updateNavItem(ImageView icon, TextView text, boolean selected) {
@@ -117,6 +131,13 @@ public class MainActivity extends BaseActivity {
 
     private int normalizeTab(int tabId) {
         if (tabId == R.id.nav_passwords || tabId == R.id.nav_generator || tabId == R.id.nav_settings) return tabId;
+        return R.id.nav_passwords;
+    }
+
+    private int inferCurrentTab() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (fragment instanceof GeneratorFragment) return R.id.nav_generator;
+        if (fragment instanceof SettingsFragment) return R.id.nav_settings;
         return R.id.nav_passwords;
     }
 

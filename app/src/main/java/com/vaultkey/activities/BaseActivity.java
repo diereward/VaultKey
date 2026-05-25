@@ -23,6 +23,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        AutoLockManager.getInstance().cancelTimer();
     }
 
     @Override

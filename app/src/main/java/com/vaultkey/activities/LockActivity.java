@@ -142,11 +142,11 @@ public class LockActivity extends AppCompatActivity {
                     runOnUiThread(this::startMain);
                 } else {
                     boolean ok = prefs.verifyMasterPassword(pw);
+                    if (ok) prefs.upgradeLegacyIfNeeded(pw);
                     runOnUiThread(() -> {
                         if (ok) {
                             failedAttempts = 0;
                             getSharedPreferences("vault_prefs", android.content.Context.MODE_PRIVATE).edit().putInt("failed_attempts", 0).putLong("lockout_until", 0).apply();
-                            prefs.upgradeLegacyIfNeeded(pw);
                             startMain();
                         } else {
                             failedAttempts++;

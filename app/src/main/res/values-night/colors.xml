@@ -20,12 +20,8 @@
     <color name="success">#22C55E</color>
     <color name="accent_blue">#93B3FF</color>
     <color name="accent_blue_container">#1A2A4E</color>
-    <color name="accent_orange">#F6B866</color>
-    <color name="accent_orange_container">#3E2C14</color>
     <color name="accent_purple">#C5A8FF</color>
     <color name="accent_purple_container">#32204B</color>
-    <color name="accent_red">#FF9A92</color>
-    <color name="accent_red_container">#47211C</color>
 
     <color name="white">#FFFFFF</color>
 </resources>

@@ -14,7 +14,6 @@
         <item name="android:windowLightStatusBar">@bool/is_light_mode</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.VaultKey.Medium</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.VaultKey.Large</item>
-        <item name="bottomNavigationStyle">@style/Widget.VaultKey.BottomNavigationView</item>
     </style>
 
     <style name="ShapeAppearance.VaultKey.Medium" parent="ShapeAppearance.Material3.MediumComponent">
@@ -25,33 +24,6 @@
         <item name="cornerSize">28dp</item>
     </style>
 
-    <style name="Widget.VaultKey.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-        <item name="backgroundTint">@android:color/transparent</item>
-        <item name="itemIconTint">@color/nav_colors</item>
-        <item name="itemTextColor">@color/nav_colors</item>
-        <item name="itemActiveIndicatorStyle">@style/NavActiveIndicatorOff</item>
-        <item name="itemTextAppearanceActive">@style/TextAppearance.VaultKey.Nav.Active</item>
-        <item name="itemTextAppearanceInactive">@style/TextAppearance.VaultKey.Nav.Inactive</item>
-        <item name="itemIconSize">22dp</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
-    </style>
-
-    <style name="NavActiveIndicatorOff" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@android:color/transparent</item>
-        <item name="android:width">1dp</item>
-        <item name="android:height">1dp</item>
-    </style>
-
-    <style name="TextAppearance.VaultKey.Nav.Active" parent="TextAppearance.Material3.LabelMedium">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">11sp</item>
-    </style>
-
-    <style name="TextAppearance.VaultKey.Nav.Inactive" parent="TextAppearance.Material3.LabelMedium">
-        <item name="android:textSize">11sp</item>
-    </style>
     <style name="Widget.VaultKey.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxCornerRadiusBottomEnd">16dp</item>
         <item name="boxCornerRadiusBottomStart">16dp</item>

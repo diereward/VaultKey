@@ -30,13 +30,15 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
 
     public interface OnEditListener { void onEdit(PasswordEntry entry); }
 
+    private static final String MASK = "••••••••••";
+    private static long lastCopyTimestamp = 0;
+
     private List<PasswordEntry> allItems = new ArrayList<>();
     private List<PasswordEntry> filtered = new ArrayList<>();
     private final Context ctx;
     private final OnEditListener editListener;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private String query = "";
-    private static long lastCopyTimestamp = 0;
 
     public PasswordAdapter(Context ctx, OnEditListener editListener) {
         this.ctx = ctx;
@@ -98,6 +100,8 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
         h.isShowing = false;
         h.tvPasswordValue.setTag(null);
         h.tvPasswordValue.setText("");
+        h.btnTogglePassword.setEnabled(true);
+        h.btnCopy.setEnabled(true);
         h.btnTogglePassword.setImageResource(R.drawable.ic_visibility);
 
         h.tvTitle.setText(e.title);
@@ -115,25 +119,35 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
             boolean wasGone = h.expandedRow.getVisibility() == View.GONE;
             h.expandedRow.setVisibility(wasGone ? View.VISIBLE : View.GONE);
             if (wasGone) {
-                h.tvPasswordValue.setText("•••••");
+                h.tvPasswordValue.setText(MASK);
                 h.isShowing = false;
+                h.btnTogglePassword.setEnabled(true);
+                h.btnCopy.setEnabled(true);
                 h.btnTogglePassword.setImageResource(R.drawable.ic_visibility);
                 io.execute(() -> {
                     String plain = decryptPassword(e);
                     v.post(() -> {
                         h.tvPasswordValue.setTag(plain);
-                        h.tvPasswordValue.setText(maskPassword(plain));
+                        if (plain == null) {
+                            h.tvPasswordValue.setText(R.string.add_password_decryption_failed);
+                            h.btnTogglePassword.setEnabled(false);
+                            h.btnCopy.setEnabled(false);
+                        }
                     });
                 });
             }
         });
 
         h.btnTogglePassword.setOnClickListener(v -> {
-            String plain = h.tvPasswordValue.getTag() != null ? (String) h.tvPasswordValue.getTag() : null;
+            String plain = h.tvPasswordValue.getTag() instanceof String ? (String) h.tvPasswordValue.getTag() : null;
             if (plain == null) {
                 io.execute(() -> {
                     String p = decryptPassword(e);
                     v.post(() -> {
+                        if (p == null) {
+                            Toast.makeText(ctx, R.string.add_password_decryption_failed, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         h.tvPasswordValue.setTag(p);
                         h.isShowing = true;
                         h.tvPasswordValue.setText(p);
@@ -142,13 +156,13 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
                 });
             } else {
                 h.isShowing = !h.isShowing;
-                h.tvPasswordValue.setText(h.isShowing ? plain : maskPassword(plain));
+                h.tvPasswordValue.setText(h.isShowing ? plain : MASK);
                 h.btnTogglePassword.setImageResource(h.isShowing ? R.drawable.ic_visibility_off : R.drawable.ic_visibility);
             }
         });
 
         h.btnCopy.setOnClickListener(v -> {
-            String cached = h.tvPasswordValue.getTag() != null ? (String) h.tvPasswordValue.getTag() : null;
+            String cached = h.tvPasswordValue.getTag() instanceof String ? (String) h.tvPasswordValue.getTag() : null;
             if (cached != null) {
                 clip("password", cached);
                 Toast.makeText(ctx, R.string.password_copied, Toast.LENGTH_SHORT).show();
@@ -156,6 +170,10 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
                 io.execute(() -> {
                     String p = decryptPassword(e);
                     v.post(() -> {
+                        if (p == null) {
+                            Toast.makeText(ctx, R.string.add_password_decryption_failed, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         clip("password", p);
                         Toast.makeText(ctx, R.string.password_copied, Toast.LENGTH_SHORT).show();
                     });
@@ -185,7 +203,18 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
     public int getItemCount() { return filtered.size(); }
 
     private String decryptPassword(PasswordEntry e) {
-        return EncryptionManager.decrypt(e.password, PreferencesManager.getInstance(ctx).getDataEncryptionKey());
+        try {
+            String dataKey = PreferencesManager.getInstance(ctx).getDataEncryptionKey();
+            String plain = EncryptionManager.decrypt(e.password, dataKey);
+            if (e.password != null && e.password.startsWith("v3:")) {
+                e.password = EncryptionManager.encrypt(plain, dataKey);
+                e.updatedAt = System.currentTimeMillis();
+                VaultDatabase.getInstance(ctx).passwordDao().update(e);
+            }
+            return plain;
+        } catch (EncryptionManager.DecryptionException ex) {
+            return null;
+        }
     }
 
     private void clip(String label, String text) {
@@ -198,10 +227,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.VH> {
                 cm.setPrimaryClip(ClipData.newPlainText("", ""));
             }
         }, 30_000);
-    }
-
-    private String maskPassword(String plain) {
-        return "•".repeat(Math.min(plain == null ? 0 : plain.length(), 20));
     }
 
     static class VH extends RecyclerView.ViewHolder {

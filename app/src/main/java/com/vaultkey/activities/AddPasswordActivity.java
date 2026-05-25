@@ -1,5 +1,7 @@
 package com.vaultkey.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,9 +32,16 @@ public class AddPasswordActivity extends BaseActivity {
     private String avatarPath = "";
     private final ExecutorService io = Executors.newSingleThreadExecutor();
 
-    private final ActivityResultLauncher<String> avatarPicker = registerForActivityResult(
-        new ActivityResultContracts.GetContent(), uri -> {
-            if (uri != null) { avatarPath = uri.toString(); refreshAvatarPreview(); }
+    private final ActivityResultLauncher<String[]> avatarPicker = registerForActivityResult(
+        new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri != null) {
+                try {
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } catch (SecurityException ignored) {
+                }
+                avatarPath = uri.toString();
+                refreshAvatarPreview();
+            }
         });
 
     @Override
@@ -52,7 +61,7 @@ public class AddPasswordActivity extends BaseActivity {
             android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.password_categories)));
         binding.acCategory.setText(getString(R.string.category_other), false);
 
-        binding.cardAvatar.setOnClickListener(v -> avatarPicker.launch("image/*"));
+        binding.cardAvatar.setOnClickListener(v -> avatarPicker.launch(new String[]{"image/*"}));
         if (binding.btnClearAvatar != null) {
             binding.btnClearAvatar.setOnClickListener(v -> {
                 avatarPath = "";
@@ -78,7 +87,13 @@ public class AddPasswordActivity extends BaseActivity {
             io.execute(() -> {
                 PasswordEntry entry = VaultDatabase.getInstance(this).passwordDao().getById(editId);
                 if (entry == null) return;
-                String plainPass = EncryptionManager.decrypt(entry.password, dataKey);
+                String plainPass;
+                try {
+                    plainPass = EncryptionManager.decrypt(entry.password, dataKey);
+                } catch (EncryptionManager.DecryptionException e) {
+                    runOnUiThread(() -> Toast.makeText(this, R.string.add_password_decryption_failed, Toast.LENGTH_SHORT).show());
+                    return;
+                }
                 runOnUiThread(() -> {
                     createdAt = entry.createdAt;
                     binding.etTitle.setText(entry.title);
@@ -137,7 +152,7 @@ public class AddPasswordActivity extends BaseActivity {
             return;
         }
 
-        if (!url.isEmpty() && !android.util.Patterns.WEB_URL.matcher(url).matches()) {
+        if (!url.isEmpty() && !isAcceptableUrl(url)) {
             binding.etUrl.setError(getString(R.string.add_password_invalid_url));
             return;
         }
@@ -169,6 +184,15 @@ public class AddPasswordActivity extends BaseActivity {
 
     private String text(android.widget.EditText et) {
         return et.getText() == null ? "" : et.getText().toString();
+    }
+
+    private boolean isAcceptableUrl(String rawUrl) {
+        String value = rawUrl == null ? "" : rawUrl.trim();
+        if (value.isEmpty() || value.contains(" ")) return false;
+        Uri uri = Uri.parse(value.contains("://") ? value : "https://" + value);
+        String host = uri.getHost();
+        if (host == null || host.isEmpty()) return false;
+        return host.contains(".") || "localhost".equalsIgnoreCase(host);
     }
 
     @Override

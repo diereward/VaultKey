@@ -11,13 +11,25 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class EncryptionManager {
 
+    public static class DecryptionException extends Exception {
+        public DecryptionException(String message) {
+            super(message);
+        }
+
+        public DecryptionException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
     public static String hashPassword(String password) {
         try {
             byte[] hash = MessageDigest.getInstance("SHA-256").digest(password.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : hash) sb.append(String.format("%02x", b));
             return sb.toString();
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean verifyPassword(String input, String stored) {
@@ -44,14 +56,14 @@ public class EncryptionManager {
         }
     }
 
-    public static String decrypt(String ciphertext, String masterPassword) {
+    public static String decrypt(String ciphertext, String masterPassword) throws DecryptionException {
         try {
             boolean isV4 = ciphertext.startsWith("v4:");
             boolean isV3 = ciphertext.startsWith("v3:");
             boolean isV2 = ciphertext.startsWith("v2:");
             String actualCipher = (isV4 || isV3 || isV2) ? ciphertext.substring(3) : ciphertext;
             byte[] combined = android.util.Base64.decode(actualCipher, android.util.Base64.NO_WRAP);
-            if (combined.length < 28) return "❌ Decryption Error";
+            if (combined.length < 28) throw new DecryptionException("Ciphertext is too short");
             byte[] salt = new byte[16], iv = new byte[12];
             System.arraycopy(combined, 0, salt, 0, 16);
             System.arraycopy(combined, 16, iv, 0, 12);
@@ -69,9 +81,10 @@ public class EncryptionManager {
                 cipher.init(Cipher.DECRYPT_MODE, key, new javax.crypto.spec.GCMParameterSpec(128, iv));
                 return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
             }
-            return "❌ Decryption Error";
+            throw new DecryptionException("Unsupported ciphertext format");
         } catch (Exception e) {
-            return "❌ Decryption Error";
+            if (e instanceof DecryptionException) throw (DecryptionException) e;
+            throw new DecryptionException("Decryption failed", e);
         }
     }
 

@@ -27,6 +27,7 @@
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
             android:layout_height="76dp"
+            android:baselineAligned="false"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -37,7 +38,6 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -67,7 +67,6 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -97,7 +96,6 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
                 android:orientation="vertical">
 

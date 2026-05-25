@@ -35,6 +35,7 @@ public class AvatarHelper {
                             show(tvInitial, title);
                             return true;
                         }
+
                         @Override
                         public boolean onResourceReady(android.graphics.drawable.Drawable resource,
                                 Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target,
@@ -55,7 +56,7 @@ public class AvatarHelper {
         hide(tv);
         iv.setVisibility(View.VISIBLE);
         iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Glide.with(ctx).load(Uri.parse(path)).diskCacheStrategy(DiskCacheStrategy.NONE).into(iv);
+        Glide.with(ctx).load(Uri.parse(path)).into(iv);
     }
 
     private static void hide(TextView tv) { if (tv != null) tv.setVisibility(View.GONE); }
@@ -75,7 +76,9 @@ public class AvatarHelper {
             if (domain.startsWith("www.")) domain = domain.substring(4);
             if (domain.isEmpty() || !domain.contains(".")) return null;
             Uri.parse("https://" + domain);
-            return "https://icons.duckduckgo.com/ip3/" + domain + ".ico";
-        } catch (Exception e) { return null; }
+            return "https://" + domain + "/favicon.ico";
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
